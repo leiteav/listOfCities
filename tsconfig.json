@@ -2,8 +2,8 @@
   "compilerOptions": {
     "target": "esnext",
     "module": "esnext",
-    "strict": true,
-    "jsx": "preserve",
+    "strict": false,
+    "jsx": "preserve","noImplicitAny": false, "strictNullChecks": true,
     "importHelpers": true,
     "moduleResolution": "node",
     "skipLibCheck": true,

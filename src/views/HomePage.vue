@@ -1,59 +1,58 @@
 <template>
-  <ion-page>
-    <ion-header :translucent="true">
-      <ion-toolbar>
-        <ion-title>Inbox</ion-title>
-      </ion-toolbar>
-    </ion-header>
-    
-    <ion-content :fullscreen="true">
-      <ion-refresher slot="fixed" @ionRefresh="refresh($event)">
-        <ion-refresher-content></ion-refresher-content>
-      </ion-refresher>
-      
-      <ion-header collapse="condense">
-        <ion-toolbar>
-          <ion-title size="large">Inbox</ion-title>
-        </ion-toolbar>
-      </ion-header>
-      
-      <ion-list>
-        <MessageListItem v-for="message in messages" :key="message.id" :message="message" />
-      </ion-list>
-    </ion-content>
-  </ion-page>
+  <div>
+    <h1>Cidades</h1>
+    <ion-list>
+      <div v-for="cidade in cidadesArray" :key="cidade.id">
+        <p>Id: {{ cidade.id }}</p>
+        <p>Nome: {{ cidade.nome }}</p>
+        <hr />
+      </div>
+    </ion-list>
+  </div>
 </template>
 
 <script lang="ts">
-import { IonContent, IonHeader, IonList, IonPage, IonRefresher, IonRefresherContent, IonTitle, IonToolbar } from '@ionic/vue';
-import MessageListItem from '@/components/MessageListItem.vue';
-import { defineComponent } from 'vue';
-import { getMessages } from '@/data/messages';
+import { IonContent } from "@ionic/vue";
+import { defineComponent } from "vue";
+import axios from "axios";
 
 export default defineComponent({
-  name: 'HomePage',
+  name: "HomePage",
   data() {
     return {
-      messages: getMessages()
-    }
+      cidadesArray: [],
+    };
+  },
+  beforeMount() {
+    this.carregarCidades();
   },
   methods: {
-    refresh: (ev: CustomEvent) => {
-      setTimeout(() => {
-        ev.detail.complete();
-      }, 3000);
-    }
-  },
-  components: {
-    IonContent,
-    IonHeader,
-    IonList,
-    IonPage,
-    IonRefresher,
-    IonRefresherContent,
-    IonTitle,
-    IonToolbar,
-    MessageListItem
+    carregarCidades() {
+      axios
+        .get(
+          "https://servicodados.ibge.gov.br/api/v1/localidades/estados/35/municipios"
+        )
+        .then((res) => this.mapearCidades(res.data))
+        .catch((err) => console.log(err.data));
+    },
+    mapearCidades(value) {
+      this.cidadesArray = value;
+    },
   },
 });
 </script>
+
+<style>
+* {
+  color: white;
+}
+hr {
+  background-color: green;
+  color: green;
+}
+div,
+p,
+h1 {
+  margin: 0px 5px;
+}
+</style>
